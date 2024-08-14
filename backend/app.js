@@ -11,6 +11,11 @@ app.use(cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true
 }));
+// app.use(cors({
+//     origin: 'http://localhost:5173', // Hardcoded origin
+//     credentials: true
+// }));
+
 
 // Mount the user routes under `/api/v1/thank`
 app.use("/api/v1/user", user);

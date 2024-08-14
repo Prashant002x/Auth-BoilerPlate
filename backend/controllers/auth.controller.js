@@ -2,6 +2,20 @@ import { User } from '../models/user.model.js'; // Adjust the import path as nee
 import { ApiResponse } from '../utils/ApiResponse.js'; // Adjust the import path as needed
 import { ApiError } from '../utils/ApiError.js'; // Adjust the import path as needed
 
+const generateAccessAndRefreshTokens = async(userId) => {
+    try {
+        const user = await User.findById(userId);
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+
+        user.refreshToken = refreshToken;
+        await user.save({ validateBeforeSave: false });
+
+        return { accessToken, refreshToken };
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong while generating refresh and access token");
+    }
+}
 const signUp = async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -34,4 +48,60 @@ const signUp = async (req, res) => {
     }
 };
 
-export default signUp;
+const signIn = async (req, res) => {
+    try {
+        const { email, username, password } = req.body;
+
+        // Validate input
+        if (!username && !email) {
+            return res.status(400).json(new ApiResponse(400, null, "Username or email is required"));
+        }
+
+        // Find the user
+        const user = await User.findOne({ $or: [{ username }, { email }] });
+
+        if (!user) {
+            return res.status(404).json(new ApiResponse(404, null, "User does not exist"));
+        }
+
+        // Check if the password is correct
+        const isPasswordValid = await user.isPasswordCorrect(password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json(new ApiResponse(401, null, "Invalid user credentials"));
+        }
+
+        // Exclude password from the response
+        const loggedInUser = await User.findById(user._id).select("-password");
+        const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)
+      
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+        new ApiResponse(
+            200, 
+            {
+                user: loggedInUser, accessToken, refreshToken
+            },
+            "User logged In Successfully"
+        )
+    )
+
+    } catch (error) {
+        console.error(error);
+
+        if (error instanceof ApiError) {
+            return res.status(error.statusCode).json(new ApiResponse(error.statusCode, null, error.message));
+        }
+        return res.status(500).json(new ApiResponse(500, Thank_You, 'Server error'));
+    }
+};
+    
+
+export {signIn,signUp}
