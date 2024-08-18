@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+}  from  '../slice/userSlice.js'
+import { useDispatch, useSelector } from 'react-redux';
+import OAuth from '../components/OAuth.jsx';
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(''); // Hold an error message
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.user);
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -14,9 +20,8 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-      setError(''); // Clear any previous error message
-      const res = await fetch('/api/v1/auth/sign-in', { // Updated endpoint for sign-in
+      dispatch(signInStart());
+      const res = await fetch('/api/v1/auth/sign-in', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -24,30 +29,20 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      console.log(data);
-      setLoading(false);
-      if (!data.success) {
-        setError(data.message || 'An error occurred. Please try again.'); // Display the error message from the response or a default message
+      if (data.success === false) {
+        dispatch(signInFailure(data.errors));
         return;
       }
-      navigate('/'); // Redirect to the homepage or another appropriate page after successful sign-in
+      dispatch(signInSuccess(data.data.user));
+      navigate('/');
     } catch (error) {
-      setLoading(false);
-      setError('An error occurred. Please try again.'); // Display a general error message
+      dispatch(signInFailure(error));
     }
   };
-
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl text-center font-semibold my-7'>Sign In</h1>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-        <input
-          type='text'
-          placeholder='Username'
-          id='username'
-          className='bg-slate-100 p-3 rounded-lg'
-          onChange={handleChange}
-        />
         <input
           type='email'
           placeholder='Email'
@@ -68,14 +63,18 @@ export default function SignIn() {
         >
           {loading ? 'Loading...' : 'Sign In'}
         </button>
-      </form> {/* Closing the form tag */}
+       <OAuth />
+      </form>
+     
       <div className='flex gap-2 mt-5'>
-        <p>Don't have an account?</p>
+        <p>Dont Have an account?</p>
         <Link to='/sign-up'>
           <span className='text-blue-500'>Sign up</span>
         </Link>
       </div>
-      {error && <p className='text-red-700 mt-5'>{error}</p>} {/* Display the error message if it exists */}
+      <p className='text-red-700 mt-5'>
+        {error ? error.message || 'Something went wrong!' : ''}
+      </p>
     </div>
   );
 }

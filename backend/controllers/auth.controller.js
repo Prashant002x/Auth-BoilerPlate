@@ -52,46 +52,35 @@ const signIn = async (req, res) => {
     try {
         const { email, username, password } = req.body;
 
-        // Validate input
         if (!username && !email) {
             return res.status(400).json(new ApiResponse(400, null, "Username or email is required"));
         }
 
-        // Find the user
         const user = await User.findOne({ $or: [{ username }, { email }] });
 
         if (!user) {
             return res.status(404).json(new ApiResponse(404, null, "User does not exist"));
         }
 
-        // Check if the password is correct
         const isPasswordValid = await user.isPasswordCorrect(password);
 
         if (!isPasswordValid) {
             return res.status(401).json(new ApiResponse(401, null, "Invalid user credentials"));
         }
 
-        // Exclude password from the response
-        const loggedInUser = await User.findById(user._id).select("-password");
-        const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)
-      
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
-    return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(
-        new ApiResponse(
-            200, 
-            {
-                user: loggedInUser, accessToken, refreshToken
-            },
-            "User logged In Successfully"
-        )
-    )
+        const loggedInUser = await User.findById(user._id).select('-password');
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+        const options = {
+            httpOnly: true,
+            secure: true,
+        };
+
+        return res
+            .status(200)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "User logged In Successfully"));
 
     } catch (error) {
         console.error(error);
@@ -99,9 +88,65 @@ const signIn = async (req, res) => {
         if (error instanceof ApiError) {
             return res.status(error.statusCode).json(new ApiResponse(error.statusCode, null, error.message));
         }
-        return res.status(500).json(new ApiResponse(500, Thank_You, 'Server error'));
+        return res.status(500).json(new ApiResponse(500, null, 'Server error'));
     }
 };
-    
 
-export {signIn,signUp}
+
+const google = async (req, res) => {
+    try {
+        const { name, email, photo } = req.body;
+        let user = await User.findOne({ email });
+        if (user) {
+            const loggedInUser = await User.findById(user._id).select('-password');
+            const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+            const options = {
+                httpOnly: true,
+                secure: true,
+            };
+
+            return res
+                .status(200)
+                .cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", refreshToken, options)
+                .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "User Logged in Successfully"));
+        } else {
+            const generatedPassword =
+                Math.random().toString(36).slice(-8) +
+                Math.random().toString(36).slice(-8);
+
+
+            const newUser = await User.create({
+                username: name.split(' ').join('').toLowerCase() + Math.random().toString(36).slice(-8),
+                email,
+                password: generatedPassword,
+                profilePicture: photo,
+            });
+
+            const newUserDetails = await User.findById(newUser._id).select('-password');
+            const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(newUser._id);
+
+            const options = {
+                httpOnly: true,
+                secure: true,
+            };
+
+            return res
+                .status(201)
+                .cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", refreshToken, options)
+                .json(new ApiResponse(201, { user: newUserDetails, accessToken, refreshToken }, "User registered and logged in successfully"));
+        }
+
+    } catch (error) {
+        console.error(error);
+
+        if (error instanceof ApiError) {
+            return res.status(error.statusCode).json(new ApiResponse(error.statusCode, null, error.message));
+        }
+        return res.status(500).json(new ApiResponse(500, null, 'Server error'));
+    }
+};
+
+
+export {signIn,signUp,google}
