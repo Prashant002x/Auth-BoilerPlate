@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-    origin: "*",
+    origin: "https://auth-boilerplate-2.onrender.com",
     credentials: true
 }));
 

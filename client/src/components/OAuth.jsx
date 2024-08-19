@@ -13,7 +13,7 @@ export default function OAuth() {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      const res = await fetch('api/v1/auth/google', {
+      const res = await fetch('/api/v1/auth/google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,8 +26,8 @@ export default function OAuth() {
       });
       const data = await res.json();
       console.log(data.data.user);
-      dispatch(signInSuccess(data.data.user)); // Ensure signInSuccess is correctly defined
-      navigate('/'); // Navigate to home or any other page
+      dispatch(signInSuccess(data.data.user));  
+      navigate('/'); 
     } catch (error) {
       console.log('Could not login with Google', error);
     }
