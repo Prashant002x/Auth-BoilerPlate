@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -n \"client,backend\" -c \"bgBlue,bgYellow\" \"vite\" \"npm run server\"",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "cd backend && npm run dev"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.7",
