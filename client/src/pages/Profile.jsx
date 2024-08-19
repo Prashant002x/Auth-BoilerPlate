@@ -101,7 +101,7 @@ function Profile() {
   const handleSignOut = async () => {
     try {
       await fetch('https://auth-boilerplate-1.onrender.com/auth/sign-out',{
-        method:'POST',
+        method:'GET',
       });
       dispatch(signOut());
     } catch (error) {

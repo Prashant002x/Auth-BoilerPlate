@@ -9,9 +9,6 @@ export const verifyJWT = async (req, _, next) => {
        
 // console.log("Token:", token); 
 // console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET); 
-
-
-        
         if (!token) {
             throw new ApiError(401, "Unauthorized request");
         }
@@ -36,5 +33,4 @@ export const verifyJWT = async (req, _, next) => {
         return next(new ApiError(401, error?.message || "Unauthorized request"));
     }
 
-    
 };
