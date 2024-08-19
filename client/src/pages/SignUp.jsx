@@ -16,7 +16,7 @@ export default function SignUp() {
     try {
       setLoading(true);
       setError(''); // Clear any previous error message
-      const res = await fetch('/api/v1/auth/sign-up', { // Corrected protocol
+      const res = await fetch('api/v1/auth/sign-up', { // Corrected protocol
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

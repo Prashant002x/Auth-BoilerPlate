@@ -21,7 +21,7 @@ export default function SignIn() {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      const res = await fetch('/api/v1/auth/sign-in', {
+      const res = await fetch('api/v1/auth/sign-in', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
