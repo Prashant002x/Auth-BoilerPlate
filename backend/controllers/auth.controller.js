@@ -98,7 +98,7 @@ const google = async (req, res) => {
         const { name, email, photo } = req.body;
         let user = await User.findOne({ email });
         if (user) {
-            const loggedInUser = await User.findById(user._id).select('-password');
+            const loggedInUser = await User.findById(user._id).select('-password ');
             const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
             const options = {
                 httpOnly: true,
@@ -147,6 +147,30 @@ const google = async (req, res) => {
         return res.status(500).json(new ApiResponse(500, null, 'Server error'));
     }
 };
+const signOut= async(req, res)=>{
+  
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $unset: {
+                refreshToken: 1 
+            }
+        },
+        {
+            new: true
+        }
+    )
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"))
+}
+   
 
 
-export {signIn,signUp,google}
+export {signIn,signUp,google , signOut}

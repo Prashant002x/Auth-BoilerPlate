@@ -1,16 +1,12 @@
 import { Router } from "express";
-import print from "../controllers/user.controller.js";
-
+import { updateUser ,test ,deleteUser} from "../controllers/user.controller.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
 const router = Router();
 
-// Handle GET requests to `/` path relative to this router
-router.route('/').get(print);
+router.route("/").get(test);
 
-// Handle GET requests to `/yeah` path relative to this router
-router.route('/yeah').get(async (req, res) => {
-    res.json({
-        message: "HELL yeah You are Learning",
-    });
-});
+router.route("/update/:id").put(verifyJWT,updateUser)
+router.route("/delete/:id").delete(verifyJWT, deleteUser);
+
 
 export default router;
