@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-    origin: "https://auth-boiler-plate-qx51.vercel.app/",
+    origin: "*",
     credentials: true
 }));
 
