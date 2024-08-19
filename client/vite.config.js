@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api/v1': 'https://auth-boilerplate-1.onrender.com',
+      'api/v1': 'https://auth-boilerplate-1.onrender.com',
     },
   },
   
