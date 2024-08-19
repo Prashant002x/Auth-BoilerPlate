@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import user from './routes/user.routes.js'; // Ensure the path is correct
-import auSign from './routes/auth.routes.js'; // Ensure the path is correct
+import user from './routes/user.routes.js'; 
+import auSign from './routes/auth.routes.js'; 
 import cookieParser from "cookie-parser";
 const app = express();
 
