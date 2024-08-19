@@ -20,7 +20,7 @@ app.use(cors({
 
 app.use(cookieParser());
 
-app.use("/api/v1/user", user);
-app.use("/api/v1/auth", auSign);
+app.use("/user", user);
+app.use("/auth", auSign);
 
 export { app };
