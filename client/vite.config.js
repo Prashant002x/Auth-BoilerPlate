@@ -9,7 +9,5 @@ export default defineConfig({
       '/api/v1': 'http://localhost:8000',
     },
   },
-  build: {
-    outDir: 'publlic',  
-  },
+  
 });
