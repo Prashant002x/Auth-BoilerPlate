@@ -73,8 +73,8 @@ const signIn = async (req, res) => {
 
         const options = {
             httpOnly: true,
-            path: '/'
-            // secure: true,
+            path: '/',
+            secure: true,
         };
 
 
