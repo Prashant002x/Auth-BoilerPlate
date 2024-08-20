@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import conf from  "../conf/conf"
 import { storage } from '../firebase/conf';
 import { getDownloadURL, uploadBytesResumable, ref } from 'firebase/storage';
 import {
@@ -11,6 +12,7 @@ import {
   deleteUserFailure,
   signOut,
 } from '../slice/userSlice';
+
 
 function Profile() {
   const dispatch = useDispatch();
@@ -61,56 +63,175 @@ function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/user/update/${currentUser._id}`, {
-        method: 'POST',
+      
+      const res = await fetch(`${conf.baseURL}/user/update/${currentUser._id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        credentials: 'include', // Correct option for including cookies
       });
-      const data = await res.json();
-      if (data.success === false) {
-        dispatch(updateUserFailure(data));
+  
+      if (!res.ok) {
+        // If response status is not OK, handle the error
+        const errorData = await res.json();
+        dispatch(updateUserFailure(errorData));
         return;
       }
-      dispatch(updateUserSuccess(data.data.user));
-      setUpdateSuccess(true);
-    } catch (error) {
-      dispatch(updateUserFailure(error));
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    try {
-      dispatch(deleteUserStart());
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/user/delete/${currentUser._id}`, {
-        method: 'DELETE',
-        
-      });
-      console.log("PRas",res);
+  
       const data = await res.json();
       console.log(data);
       if (data.success === false) {
+       
+        dispatch(updateUserFailure(data));
+        return;
+      }
+  
+   
+      dispatch(updateUserSuccess(data.data.user));
+      setUpdateSuccess(true);
+    } catch (error) {
+     
+      dispatch(updateUserFailure({ message: error.message }));
+    }
+  };
+  
+
+  // const handleDeleteAccount = async () => {
+  //   try {
+  //     dispatch(deleteUserStart());
+  //     const res = await fetch(`http://localhost:8000/user/delete/${currentUser._id}`, {
+  //       method: 'DELETE'
+        
+  //     });
+  //     console.log("PRas",res);
+  //     const data = await res.json();
+  //     console.log(data);
+  //     if (data.success === false) {
+  //       dispatch(deleteUserFailure(data));
+  //       return;
+  //     }
+  //     dispatch(deleteUserSuccess(data));
+  //   } catch (error) {
+  //     dispatch(deleteUserFailure(error));
+  //   }
+  // };
+  const handleDeleteAccount = async () => {
+    try {
+      dispatch(deleteUserStart());
+  
+      const res = await fetch(`${conf.baseURL}/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+        credentials: 'include', // This ensures cookies are sent with the request
+      });
+  
+      console.log("Response:", res);
+  
+      const data = await res.json();
+      console.log("Data:", data);
+  
+      if (!res.ok || data.success === false) {
         dispatch(deleteUserFailure(data));
         return;
       }
+  
       dispatch(deleteUserSuccess(data));
     } catch (error) {
       dispatch(deleteUserFailure(error));
     }
   };
+ // Import axios
 
+// const handleDeleteAccount = async () => {
+//   try {
+//     dispatch(deleteUserStart());
+
+//     const res = await axios.delete(`http://localhost:8000/user/delete/${currentUser._id}`, {
+//       withCredentials: true, // This ensures cookies are sent with the request
+//     });
+
+//     console.log("Response:", res);
+
+//     const data = res.data; // Axios automatically parses the JSON response
+//     console.log("Data:", data);
+
+//     if (res.status !== 200 || data.success === false) { // Check for success in response data
+//       dispatch(deleteUserFailure(data));
+//       return;
+//     }
+
+//     dispatch(deleteUserSuccess(data));
+//   } catch (error) {
+//     dispatch(deleteUserFailure(error));
+//   }
+// };
+
+  
+
+
+  // const handleSignOut = async () => {
+  //   try {
+  //     const resp = await fetch("http://localhost:8000/auth/sign-out",{
+  //       method:"GET"
+  //     });
+  //     console.log(resp);
+  //     dispatch(signOut());
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  // const handleSignOut = async () => {
+  //   try {
+  //     const resp = await fetch("http://localhost:8000/auth/sign-out", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       }
+  //     });
+  //    document.cookie = "accessToken"+ '=; Max-Age=0'; 
+  
+  //     // if (!resp.ok) {
+  //     //   throw new Error(`Sign out failed with status ${resp.status}`);
+  //     // }
+  // console.log(resp);
+  //     const data = await resp.json();
+  //     console.log( data.message);
+  
+  //     dispatch(signOut());
+  //   } catch (error) {
+  //     console.error('Sign out error:', error);
+  //   }
+  // };
 
   const handleSignOut = async () => {
     try {
-      await fetch(`${import.meta.env.VITE_BASE_URL}/auth/sign-out`,{
-        method:'GET',
+      const resp = await fetch(`${conf.baseURL}/auth/sign-out`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: 'include', // Ensure the request includes the cookie
       });
+      
+      if (!resp.ok) {
+        throw new Error(`Sign out failed with status ${resp.status}`);
+      }
+  
+      // Attempt to delete the cookie
+      // document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax; secure";
+  
+      const data = await resp.json();
+      console.log(data.message);
+  
       dispatch(signOut());
     } catch (error) {
-      console.log(error);
+      console.error('Sign out error:', error);
     }
   };
+  
+  
+  
 
   return (
     <div className='p-3 max-w-lg mx-auto'>

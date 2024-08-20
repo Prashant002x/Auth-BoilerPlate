@@ -73,8 +73,10 @@ const signIn = async (req, res) => {
 
         const options = {
             httpOnly: true,
-            secure: true,
+            path: '/'
+            // secure: true,
         };
+
 
         return res
             .status(200)
@@ -104,11 +106,12 @@ const google = async (req, res) => {
                 httpOnly: true,
                 secure: true,
             };
+            console.log("Token",accessToken,refreshToken)
 
             return res
                 .status(200)
-                .cookie("accessToken", accessToken, options)
-                .cookie("refreshToken", refreshToken, options)
+                .cookie("accessTokeni", accessToken, options)
+                .cookie("refreshTokenii", refreshToken, options)
                 .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "User Logged in Successfully"));
         } else {
             const generatedPassword =
@@ -149,17 +152,17 @@ const google = async (req, res) => {
 };
 const signOut= async(req, res)=>{
   
-    await User.findByIdAndUpdate(
-        req.user._id,
-        {
-            $unset: {
-                refreshToken: 1 
-            }
-        },
-        {
-            new: true
-        }
-    )
+    // await User.findByIdAndUpdate(
+    //     req.user._id,
+    //     {
+    //         $unset: {
+    //             refreshToken: 1 
+    //         }
+    //     },
+    //     {
+    //         new: true
+    //     }
+    // )
     const options = {
         httpOnly: true,
         secure: true

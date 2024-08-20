@@ -53,7 +53,35 @@ const updateUser = async (req, res) => {
             .json(new ApiResponse(500, null, "Server error"));
     }
 };
-
+// const updateUser = async (req, res) => {
+//     if (req.user.id !== req.params.id) {
+//         return next(errorHandler(401, 'You can update only your account!'));
+//       }
+//       try {
+//         if (req.body.password) {
+//           req.body.password = bcryptjs.hashSync(req.body.password, 10);
+//         }
+    
+//         const updatedUser = await User.findByIdAndUpdate(
+//           req.params.id,
+//           {
+//             $set: {
+//               username: req.body.username,
+//               email: req.body.email,
+//               password: req.body.password,
+//               profilePicture: req.body.profilePicture,
+//             },
+//           },
+//           { new: true }
+//         ).select("-password");
+      
+//         res.status(200).json(rest);
+//       } catch (error) {
+//         next(error);
+//       }
+//     };
+    
+    
 const deleteUser= async(req, res) =>{
 
     try{

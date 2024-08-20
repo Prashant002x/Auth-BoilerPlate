@@ -9,6 +9,6 @@ router.route("/sign-up").post(signUp)
 router.route("/sign-in").post(signIn)
 
 router.route("/google").post(google)
-router.route("/sign-out").get(verifyJWT,signOut)
+router.route("/sign-out").post(signOut)
 export default router;
  

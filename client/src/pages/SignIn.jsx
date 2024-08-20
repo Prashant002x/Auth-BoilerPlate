@@ -17,18 +17,47 @@ export default function SignIn() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     dispatch(signInStart());
+  //     const res = await fetch(`http://localhost:8000/auth/sign-in`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
+    
+  //     const data = await res.json();
+  //     document.cookie="accessToken"+"="+data.data.accessToken
+  //     console.log(data);
+  //     if (data.success === false) {
+  //       dispatch(signInFailure(data.errors));
+  //       return;
+  //     }
+  //     dispatch(signInSuccess(data.data.user));
+  //     navigate('/');
+  //   } catch (error) {
+  //     dispatch(signInFailure(error));
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/sign-in`, {
+      const res = await fetch(`${conf.baseURL}/auth/sign-in`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        credentials: 'include', // Ensure cookies are included in requests
       });
+  
       const data = await res.json();
+      console.log(data);
       if (data.success === false) {
         dispatch(signInFailure(data.errors));
         return;
@@ -39,6 +68,7 @@ export default function SignIn() {
       dispatch(signInFailure(error));
     }
   };
+  
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl text-center font-semibold my-7'>Sign In</h1>
