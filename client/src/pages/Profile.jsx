@@ -87,7 +87,7 @@ function Profile() {
         method: 'DELETE',
         
       });
-      console.log(res);
+      console.log("PRas",res);
       const data = await res.json();
       console.log(data);
       if (data.success === false) {
