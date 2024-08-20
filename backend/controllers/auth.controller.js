@@ -104,6 +104,7 @@ const google = async (req, res) => {
             const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
             const options = {
                 httpOnly: true,
+                secure:true,
                 path:"/"
             };
             console.log("Token",accessToken,refreshToken)
@@ -131,6 +132,7 @@ const google = async (req, res) => {
 
             const options = {
                 httpOnly: true,
+                secure:true,
                 path:"/",
             };
 
