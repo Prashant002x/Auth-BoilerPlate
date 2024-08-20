@@ -95,30 +95,87 @@ const signIn = async (req, res) => {
 };
 
 
+// const google = async (req, res) => {
+//     try {
+//         const { name, email, photo } = req.body;
+//         let user = await User.findOne({ email });
+//         if (user) {
+//             const loggedInUser = await User.findById(user._id).select('-password ');
+//             const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+//             const options = {
+//                 httpOnly: true,
+//                 secure:true,
+//                 path:"/"
+//             };
+//             console.log("Token",accessToken,refreshToken)
+
+//             return res
+//                 .status(200)
+//                 .cookie("accessTokeni", accessToken, options)
+//                 .cookie("refreshTokenii", refreshToken, options)
+//                 .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "User Logged in Successfully"));
+//         } else {
+//             const generatedPassword =
+//                 Math.random().toString(36).slice(-8) +
+//                 Math.random().toString(36).slice(-8);
+
+
+//             const newUser = await User.create({
+//                 username: name.split(' ').join('').toLowerCase() + Math.random().toString(36).slice(-8),
+//                 email,
+//                 password: generatedPassword,
+//                 profilePicture: photo,
+//             });
+
+//             const newUserDetails = await User.findById(newUser._id).select('-password');
+//             const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(newUser._id);
+
+//             const options = {
+//                 httpOnly: true,
+//                 secure:true,
+//                 path:"/",
+//             };
+
+//             return res
+//                 .status(201)
+//                 .cookie("accessToken", accessToken, options)
+//                 .cookie("refreshToken", refreshToken, options)
+//                 .json(new ApiResponse(201, { user: newUserDetails, accessToken, refreshToken }, "User registered and logged in successfully"));
+//         }
+
+//     } catch (error) {
+//         console.error(error);
+
+//         if (error instanceof ApiError) {
+//             return res.status(error.statusCode).json(new ApiResponse(error.statusCode, null, error.message));
+//         }
+//         return res.status(500).json(new ApiResponse(500, null, 'Server error'));
+//     }
+// };
+
 const google = async (req, res) => {
     try {
         const { name, email, photo } = req.body;
         let user = await User.findOne({ email });
+
         if (user) {
-            const loggedInUser = await User.findById(user._id).select('-password ');
+            const loggedInUser = await User.findById(user._id).select('-password');
             const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
             const options = {
                 httpOnly: true,
-                secure:true,
-                path:"/"
+                secure: true,
+                path: "/"
             };
-            console.log("Token",accessToken,refreshToken)
+
+            console.log("Token", accessToken, refreshToken);
 
             return res
                 .status(200)
-                .cookie("accessTokeni", accessToken, options)
-                .cookie("refreshTokenii", refreshToken, options)
+                .cookie("accessToken", accessToken, options) // Corrected cookie name
+                .cookie("refreshToken", refreshToken, options) // Corrected cookie name
                 .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "User Logged in Successfully"));
         } else {
-            const generatedPassword =
-                Math.random().toString(36).slice(-8) +
-                Math.random().toString(36).slice(-8);
-
+            const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
 
             const newUser = await User.create({
                 username: name.split(' ').join('').toLowerCase() + Math.random().toString(36).slice(-8),
@@ -132,14 +189,14 @@ const google = async (req, res) => {
 
             const options = {
                 httpOnly: true,
-                secure:true,
-                path:"/",
+                secure: true,
+                path: "/",
             };
 
             return res
                 .status(201)
-                .cookie("accessToken", accessToken, options)
-                .cookie("refreshToken", refreshToken, options)
+                .cookie("accessToken", accessToken, options) // Corrected cookie name
+                .cookie("refreshToken", refreshToken, options) // Corrected cookie name
                 .json(new ApiResponse(201, { user: newUserDetails, accessToken, refreshToken }, "User registered and logged in successfully"));
         }
 
@@ -152,6 +209,7 @@ const google = async (req, res) => {
         return res.status(500).json(new ApiResponse(500, null, 'Server error'));
     }
 };
+
 const signOut= async(req, res)=>{
   
     // await User.findByIdAndUpdate(
