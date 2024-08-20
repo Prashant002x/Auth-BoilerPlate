@@ -64,7 +64,7 @@ function Profile() {
     try {
         dispatch(updateUserStart());
         
-        const res = await fetch(`${conf.baseURL}/user/update/${currentUser._id}`, {
+        const res = await fetch(`${conf.baseURL}/user/update/${currentUser.user._id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
