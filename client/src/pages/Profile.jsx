@@ -83,11 +83,13 @@ function Profile() {
   const handleDeleteAccount = async () => {
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`https://auth-boiler-plate.vercel.app/user/delete/${currentUser._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/user/delete/${currentUser._id}`, {
         method: 'DELETE',
         
       });
+      console.log(res);
       const data = await res.json();
+      console.log(data);
       if (data.success === false) {
         dispatch(deleteUserFailure(data));
         return;

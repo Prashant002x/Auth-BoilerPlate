@@ -19,6 +19,7 @@ export const verifyJWT = async (req, _, next) => {
         }
 
         const user = await User.findById(decodedToken._id).select("-password");
+        console.log("PRasahtn " ,user)
         if (!user) {
             throw new ApiError(401, "User not found");
         }
