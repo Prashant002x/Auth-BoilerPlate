@@ -5,8 +5,8 @@ import { User } from "../models/user.model.js";
 export const verifyJWT = async (req, _, next) => {
     try {
       
-        const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
-       
+        // const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
+       const token = req.body.token 
 // console.log("Token:", token); 
 // console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET); 
         if (!token) {
