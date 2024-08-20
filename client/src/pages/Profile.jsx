@@ -62,41 +62,39 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      dispatch(updateUserStart());
-      
-      const res = await fetch(`${conf.baseURL}/user/update/${currentUser.user_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-        credentials: 'include', // Correct option for including cookies
-      });
+        dispatch(updateUserStart());
+        
+        const res = await fetch(`${conf.baseURL}/user/update/${currentUser._id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${currentUser.accessToken}` // Add Authorization header
+            },
+            body: JSON.stringify(formData),
+            credentials: 'include', // Correct option for including cookies
+        });
   
-      if (!res.ok) {
-        // If response status is not OK, handle the error
-        const errorData = await res.json();
-        dispatch(updateUserFailure(errorData));
-        return;
-      }
+        if (!res.ok) {
+            // If response status is not OK, handle the error
+            const errorData = await res.json();
+            dispatch(updateUserFailure(errorData));
+            return;
+        }
   
-      const data = await res.json();
-      console.log(data);
-      if (data.success === false) {
-       
-        dispatch(updateUserFailure(data));
-        return;
-      }
+        const data = await res.json();
+        console.log(data);
+        if (data.success === false) {
+            dispatch(updateUserFailure(data));
+            return;
+        }
   
-   
-      dispatch(updateUserSuccess(data.data.user));
-      setUpdateSuccess(true);
+        dispatch(updateUserSuccess(data.data.user));
+        setUpdateSuccess(true);
     } catch (error) {
-     
-      dispatch(updateUserFailure({ message: error.message }));
+        dispatch(updateUserFailure({ message: error.message }));
     }
-  };
-  
+};
+
 
   // const handleDeleteAccount = async () => {
   //   try {
