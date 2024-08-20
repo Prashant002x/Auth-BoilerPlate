@@ -37,7 +37,7 @@ export default function SignIn() {
   //       dispatch(signInFailure(data.errors));
   //       return;
   //     }
-  //     dispatch(signInSuccess(data.data.user));
+  //     dispatch(signInSuccess(data.data));
   //     navigate('/');
   //   } catch (error) {
   //     dispatch(signInFailure(error));
@@ -63,7 +63,7 @@ export default function SignIn() {
         dispatch(signInFailure(data.errors));
         return;
       }
-      dispatch(signInSuccess(data.data.user));
+      dispatch(signInSuccess(data.data));
       navigate('/');
     } catch (error) {
       dispatch(signInFailure(error));

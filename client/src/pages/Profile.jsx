@@ -64,11 +64,11 @@ function Profile() {
     try {
         dispatch(updateUserStart());
         
-        const res = await fetch(`${conf.baseURL}/user/update/${currentUser._id}`, {
+        const res = await fetch(`${conf.baseURL}/user/update/${currentUser.user._id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${currentUser.refreshToken}` // Add Authorization header
+                'Authorization': `Bearer ${currentUser.accessToken}` // Add Authorization header
             },
             body: JSON.stringify(formData),
             credentials: 'include', // Correct option for including cookies
@@ -88,7 +88,7 @@ function Profile() {
             return;
         }
   
-        dispatch(updateUserSuccess(data.data.user));
+        dispatch(updateUserSuccess(data.data));
         setUpdateSuccess(true);
     } catch (error) {
         dispatch(updateUserFailure({ message: error.message }));
@@ -119,7 +119,7 @@ function Profile() {
     try {
       dispatch(deleteUserStart());
   
-      const res = await fetch(`${conf.baseURL}/user/delete/${currentUser._id}`, {
+      const res = await fetch(`${conf.baseURL}/user/delete/${currentUser.user._id}`, {
         method: 'DELETE',
         credentials: 'include', 
       });
@@ -243,7 +243,7 @@ function Profile() {
           onChange={(e) => setImage(e.target.files[0])}
         />
         <img
-          src={formData.profilePicture || currentUser.profilePicture}
+          src={formData.profilePicture || currentUser.user.profilePicture}
           alt='profile'
           className='h-24 w-24 self-center cursor-pointer rounded-full object-cover mt-2'
           onClick={() => fileRef.current.click()}
@@ -262,7 +262,7 @@ function Profile() {
           )}
         </p>
         <input
-          defaultValue={currentUser.username}
+          defaultValue={currentUser.user.username}
           type='text'
           id='username'
           placeholder='Username'
@@ -270,7 +270,7 @@ function Profile() {
           onChange={handleChange}
         />
         <input
-          defaultValue={currentUser.email}
+          defaultValue={currentUser.user.email}
           type='email'
           id='email'
           placeholder='Email'
