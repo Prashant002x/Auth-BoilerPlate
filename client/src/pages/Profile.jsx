@@ -64,7 +64,7 @@ function Profile() {
     try {
       dispatch(updateUserStart());
       
-      const res = await fetch(`${conf.baseURL}/user/update/${currentUser._id}`, {
+      const res = await fetch(`${conf.baseURL}/user/update/${currentUser.user_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -121,7 +121,7 @@ function Profile() {
     try {
       dispatch(deleteUserStart());
   
-      const res = await fetch(`${conf.baseURL}/user/delete/${currentUser._id}`, {
+      const res = await fetch(`${conf.baseURL}/user/delete/${currentUser.user_id}`, {
         method: 'DELETE',
         credentials: 'include', 
       });
