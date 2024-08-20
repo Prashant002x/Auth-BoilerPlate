@@ -64,11 +64,11 @@ function Profile() {
     try {
         dispatch(updateUserStart());
         
-        const res = await fetch(`${conf.baseURL}/user/update/${currentUser.user._id}`, {
+        const res = await fetch(`${conf.baseURL}/user/update/${currentUser._id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${currentUser.accessToken}` // Add Authorization header
+                'Authorization': `Bearer ${currentUser.refreshToken}` // Add Authorization header
             },
             body: JSON.stringify(formData),
             credentials: 'include', // Correct option for including cookies
@@ -119,7 +119,7 @@ function Profile() {
     try {
       dispatch(deleteUserStart());
   
-      const res = await fetch(`${conf.baseURL}/user/delete/${currentUser.user_id}`, {
+      const res = await fetch(`${conf.baseURL}/user/delete/${currentUser._id}`, {
         method: 'DELETE',
         credentials: 'include', 
       });

@@ -63,7 +63,7 @@ export default function SignIn() {
         dispatch(signInFailure(data.errors));
         return;
       }
-      dispatch(signInSuccess(data.data));
+      dispatch(signInSuccess(data.data.user));
       navigate('/');
     } catch (error) {
       dispatch(signInFailure(error));
