@@ -28,7 +28,7 @@ export const verifyJWT = async (req, res, next) => {
         } else if (error instanceof jwt.TokenExpiredError) {
             return next(new ApiError(401, "Access token expired"));
         } else {
-            return next(new ApiError(401, error.message || "Unauthorized request"));
+            return next(new ApiError(401, "Unauthorized request"));
         }
     }
 };
