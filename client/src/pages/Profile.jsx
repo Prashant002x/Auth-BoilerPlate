@@ -123,7 +123,7 @@ function Profile() {
   
       const res = await fetch(`${conf.baseURL}/user/delete/${currentUser._id}`, {
         method: 'DELETE',
-        credentials: 'include', // This ensures cookies are sent with the request
+        credentials: 'include', 
       });
   
       console.log("Response:", res);

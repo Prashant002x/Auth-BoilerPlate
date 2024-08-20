@@ -16,7 +16,7 @@ const updateUser = async (req, res) => {
                 .json(new ApiResponse(400, null, "You can update only your account"));
         }
 
-        const updatedUser = await User.findByIdAndUpdate(
+        const updated = await User.findByIdAndUpdate(
             req.params.id,
             {
                 $set: {
@@ -27,7 +27,8 @@ const updateUser = async (req, res) => {
                 },
             },
             { new: true }
-        ).select("-password");
+        )
+        const updatedUser = await User.findById(updated._id).selected("-password");
 
         if (!updatedUser) {
             return res
