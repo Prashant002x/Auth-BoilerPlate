@@ -13,7 +13,7 @@ export default function OAuth() {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      const res = await fetch('https://auth-boilerplate-1.onrender.com/auth/google', {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

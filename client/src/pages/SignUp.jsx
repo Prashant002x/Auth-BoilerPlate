@@ -16,7 +16,7 @@ export default function SignUp() {
     try {
       setLoading(true);
       setError(''); // Clear any previous error message
-      const res = await fetch('https://auth-boilerplate-1.onrender.com/auth/sign-up', { // Corrected protocol
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/sign-up`, { // Corrected protocol
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

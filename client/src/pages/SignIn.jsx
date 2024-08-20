@@ -21,7 +21,7 @@ export default function SignIn() {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      const res = await fetch('https://auth-boilerplate-1.onrender.com/auth/sign-in', {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/sign-in`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
